@@ -1,17 +1,33 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../providers/AuthProvider';
 import BookingRow from './BookingRow';
+import { useNavigate } from 'react-router-dom';
 
 const Bookings = () => {
     const { user } = useContext(AuthContext);
     const [bookings, setBookings] = useState([]);
-    const url = `http://localhost:5000/bookings?email=${user?.email}`;
+    const navigate = useNavigate();
     useEffect(() => {
-        fetch(url)
+        const url = `http://localhost:5000/bookings?email=${user?.email}`;
+        fetch(url,{
+            method: 'GET',
+            headers:{
+                authorization: `Bearer ${localStorage.getItem('car-access-token')}`
+            }
+        })
             .then(res => res.json())
-            .then(data => setBookings(data))
+            .then(data => {
 
-    }, [url]);
+                if (!data.error){
+                    setBookings(data)
+                }
+                else{
+                    // logout and then navigate
+                    navigate('/');
+                }
+            })
+
+    }, [navigate, user?.email]);
 
     const handleDelete = id => {
         const proceed = confirm('Are you sure you want to delete?');
@@ -25,7 +41,7 @@ const Bookings = () => {
                     console.log(data);
                     if (data.deletedCount > 0) {
                         alert('Data Deleted!');
-                        const remaining = bookings.filter(booking => booking._id == id);
+                        const remaining = bookings.filter(booking => booking._id !== id);
                         setBookings(remaining);
                     }
                 })
