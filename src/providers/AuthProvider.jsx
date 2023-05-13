@@ -41,7 +41,7 @@ const AuthProvider = ({ children }) => {
                 const loggedUser = {
                     email: currentUser.email
                 }
-                fetch('http://localhost:5000/jwt', {
+                fetch('https://car-doctor-server-delta-pied.vercel.app/jwt', {
                     method: "POST",
                     headers: {
                         'content-type': 'application/json',
@@ -55,7 +55,7 @@ const AuthProvider = ({ children }) => {
                         localStorage.setItem('car-access-token', data.token)
                     })
             }
-            else{
+            else {
                 localStorage.removeItem('car-access-token')
             }
         });

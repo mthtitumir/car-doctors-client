@@ -5,39 +5,39 @@ import { AuthContext } from '../../providers/AuthProvider';
 const Checkout = () => {
     const service = useLoaderData();
     const { title, _id, price, img } = service;
-    const {user} = useContext(AuthContext);
+    const { user } = useContext(AuthContext);
 
-    const handleBookSubmit = event =>{
+    const handleBookSubmit = event => {
         event.preventDefault()
         const form = event.target;
         const name = form.name.value;
         const date = form.date.value;
         const email = user?.email;
         const booking = {
-            customerName : name,
+            customerName: name,
             email: email,
             date,
-            service:title,
+            service: title,
             service_id: _id,
             price: price,
             img
-    
+
         }
         console.log(booking);
-        fetch('http://localhost:5000/bookings', {
+        fetch('https://car-doctor-server-delta-pied.vercel.app/bookings', {
             method: 'POST',
             headers: {
                 "Content-Type": 'application/json'
             },
             body: JSON.stringify(booking)
         })
-        .then(res => res.json())
-        .then(data =>{
-            console.log(data);
-            if (data.insertedId){
-                alert('Service booked successfully!')
-            }
-        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                if (data.insertedId) {
+                    alert('Service booked successfully!')
+                }
+            })
     }
 
     return (
